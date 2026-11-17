@@ -18,14 +18,23 @@ The binary is `target/release/ultraviewer-mcp`. Run with no arguments, it starts
 
 UltraViewer compresses screen updates with a Zstandard dictionary that ships with UltraViewer itself, a 112,640-byte file named `8bit.dat`. That file belongs to UltraViewer and carries no redistribution license, so this repository does not include it and the binary does not embed it. You supply your own copy once.
 
-**Get the file from an UltraViewer installation you have.** Install UltraViewer on a Windows computer you use, then copy `8bit.dat` out of its install folder. If you already have MacViewer installed on this Mac, nothing is needed: its copy at `/Applications/MacViewer.app/Contents/Resources/8bit.dat` is found automatically.
+**Option 1: fetch it from ultraviewer.net (macOS or Linux).** The script downloads the official UltraViewer installer, extracts only `app/8bit.dat` with `innoextract` (the installer is never run), and installs it:
 
-**Install it:**
+```sh
+brew install innoextract        # or: apt install innoextract
+scripts/fetch-dictionary.sh     # add --binary /path/to/ultraviewer-mcp if it is not on PATH
+```
+
+If ultraviewer.net's certificate has lapsed, the script stops. `--allow-stale-tls` skips the certificate check for the download only. That is safe here because nothing downloaded is executed and the extracted file must still match the pinned SHA-256.
+
+**Option 2: copy it from an installation.** Copy `8bit.dat` out of the UltraViewer install folder on a Windows computer you use. If MacViewer is installed on this Mac, nothing is needed: its copy at `/Applications/MacViewer.app/Contents/Resources/8bit.dat` is found automatically. Then install it:
 
 ```sh
 ultraviewer-mcp install-dictionary /path/to/8bit.dat
 ultraviewer-mcp check-dictionary
 ```
+
+You are responsible for following UltraViewer's terms of use for the file you download.
 
 `install-dictionary` refuses any file whose size or SHA-256 does not match the expected dictionary:
 

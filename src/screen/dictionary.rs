@@ -34,10 +34,16 @@ impl fmt::Display for DictionaryError {
                 writeln!(
                     f,
                     "The UltraViewer screen dictionary ({DICTIONARY_FILE_NAME}) was not found. \
-                     It is not distributed with ultraviewer-mcp; copy it from your own UltraViewer \
-                     installation and install it with:"
+                     It is not distributed with ultraviewer-mcp. Get it from UltraViewer itself:"
                 )?;
-                writeln!(f, "  ultraviewer-mcp install-dictionary /path/to/8bit.dat")?;
+                writeln!(
+                    f,
+                    "  scripts/fetch-dictionary.sh   (downloads the official installer, extracts only 8bit.dat)"
+                )?;
+                writeln!(
+                    f,
+                    "  ultraviewer-mcp install-dictionary /path/to/8bit.dat   (copy from an UltraViewer install)"
+                )?;
                 write!(f, "Searched:")?;
                 for path in searched {
                     write!(f, "\n  {}", path.display())?;
