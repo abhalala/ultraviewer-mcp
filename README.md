@@ -75,6 +75,14 @@ claude mcp add ultraviewer -- /absolute/path/to/ultraviewer-mcp
 
 The server owns one outgoing session at a time. It does not save the partner password. Its own registration identity is stored with user-only permissions in `~/.config/ultraviewer-mcp/`. Set `ULTRAVIEWER_MCP_NAME` to change the display name sent to the partner.
 
+## Agent skill
+
+`skills/ultraviewer-computer-use/SKILL.md` teaches an agent the setup check and control loop. Install it with:
+
+```sh
+npx skills add abhalala/ultraviewer-mcp
+```
+
 ## Tools
 
 | Tool | Purpose |
