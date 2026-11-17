@@ -69,8 +69,6 @@ impl Session {
                     .into(),
             );
         }
-        // Fail before any network traffic if the screen cannot be decoded.
-        crate::screen::screen_dictionary().map_err(|error| error.to_string())?;
         self.reset();
         self.phase = Phase::Connecting;
         self.partner_id = partner_id.to_string();
@@ -153,7 +151,6 @@ impl Session {
         let mut lines = vec![
             format!("Phase: {}", self.phase.name()),
             format!("Status: {}", self.status),
-            crate::screen::dictionary::status_line(),
         ];
         if !self.partner_id.is_empty() {
             lines.push(format!("Partner ID: {}", self.partner_id));

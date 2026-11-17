@@ -4,7 +4,7 @@ description: >
   Operate an authorized remote Windows computer through the ultraviewer-mcp server
   (UltraViewer-compatible, headless). Use when the user asks to connect to an UltraViewer
   ID, look at or control a remote PC they gave you an UltraViewer ID and password for, or
-  set up ultraviewer-mcp. Requires the user's own copy of UltraViewer's 8bit.dat.
+  set up ultraviewer-mcp.
 metadata:
   homepage: https://github.com/abhalala/ultraviewer-mcp
 ---
@@ -23,11 +23,7 @@ metadata:
 ## Setup check
 
 1. Confirm the `ultraviewer` MCP server is configured. If not, point the user to the README: build with `cargo build --release`, then register the binary as a stdio server, for example `claude mcp add ultraviewer -- /absolute/path/to/ultraviewer-mcp`.
-2. Call `session_status`. Its `Screen dictionary:` line must say `verified`. If it says `missing`, the dictionary has to come from UltraViewer itself. Ask the user before downloading, then pick one:
-   - Run `scripts/fetch-dictionary.sh` from the ultraviewer-mcp checkout (needs `innoextract`). It downloads the official installer from ultraviewer.net, extracts only `app/8bit.dat` without running anything, and installs it. If it stops on a certificate error, explain that and use `--allow-stale-tls` only if the user agrees.
-   - Or have the user copy `8bit.dat` from an UltraViewer install folder and run `ultraviewer-mcp install-dictionary /path/to/8bit.dat`.
-
-   Never get the file from mirrors, other repositories, or file-sharing sites, and never commit or upload it. The install command rejects any copy whose SHA-256 does not match.
+2. Call `session_status` to confirm the server responds.
 
 ## Control loop
 

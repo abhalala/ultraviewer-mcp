@@ -1,6 +1,2 @@
 /target/
-# UltraViewer's screen dictionary is not redistributable. Never commit it.
-*.dat
-*.dat.tmp
-/assets/
 .DS_Store

@@ -1,15 +1,13 @@
 //! ModernScreenMessage / ModernScreenRenderer / ZstdScreenDecoder /
 //! ScreenPixelStorage / ScreenRectangleBuffer. OWNER: screen.
 
-pub mod dictionary;
 mod frame;
 mod renderer;
 mod zstd;
 
-pub use dictionary::{screen_dictionary, DictionaryError};
 pub use frame::{CacheAddition, CacheReference, FrameMessage, Region, Scroll};
 pub use renderer::{RectBuffer, Renderer, RESET_FRAME_NUMBER};
-pub use zstd::{ZstdDecoder, ZstdError};
+pub use zstd::{ZstdDecoder, ZstdError, SCREEN_DICTIONARY};
 
 use crate::wire::Result;
 use std::fmt;
@@ -31,15 +29,11 @@ pub enum ScreenError {
     UnsupportedJpeg,
     AuxiliaryAtlasOutOfBounds,
     Zstd(ZstdError),
-    Dictionary(DictionaryError),
 }
 
 impl fmt::Display for ScreenError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use ScreenError::*;
-        if let Dictionary(error) = self {
-            return write!(f, "{error}");
-        }
         f.write_str(match self {
             UnsupportedCommand(_) => "Windows sent an unsupported screen update.",
             MissingPart(_) | MalformedPart(_) => "Windows sent an incomplete screen update.",
@@ -53,7 +47,6 @@ impl fmt::Display for ScreenError {
             InvalidJpeg | UnsupportedJpeg => "Windows sent a screen image that could not be decoded.",
             AuxiliaryAtlasOutOfBounds => "A Windows screen update contains an invalid image tile.",
             Zstd(_) => "The Windows screen update could not be decompressed.",
-            Dictionary(_) => unreachable!("handled above"),
         })
     }
 }

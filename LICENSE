@@ -24,5 +24,5 @@ SOFTWARE.
 
 This license covers the MacViewer-derived source code in this repository.
 Rust dependencies are distributed under their own licenses. The 8bit.dat
-dictionary is an UltraViewer-supplied data asset; it is not included in this
-repository and is not licensed under the MIT License (see UPSTREAM_NOTICE.md).
+dictionary in assets/ is an UltraViewer-supplied data asset and is not
+licensed under the MIT License (see THIRD_PARTY_NOTICES.md).

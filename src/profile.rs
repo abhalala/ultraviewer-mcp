@@ -186,7 +186,7 @@ impl Stored {
     }
 }
 
-pub(crate) fn config_dir() -> Result<PathBuf> {
+fn config_dir() -> Result<PathBuf> {
     let base = match std::env::var_os("XDG_CONFIG_HOME").filter(|v| !v.is_empty()) {
         Some(x) => PathBuf::from(x),
         None => PathBuf::from(std::env::var_os("HOME").ok_or("HOME is not set")?).join(".config"),

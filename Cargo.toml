@@ -30,12 +30,14 @@ md-5 = "0.10"
 png = "0.17"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
 serde_json = "1"
-sha2 = "0.10"
 sha1 = "0.10"
 unicode-normalization = "0.1"
 webpki-roots = "1"
 winit = { version = "0.30", optional = true }
 zstd-safe = { version = "7", features = ["experimental", "std"] }
+
+[dev-dependencies]
+sha2 = "0.10"
 
 [profile.release]
 lto = "thin"

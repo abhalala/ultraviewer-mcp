@@ -2,7 +2,7 @@
 //! The >=6.0.0 desktop pipeline in the 16bpp converter mode (DisplayColors != 1).
 
 use super::frame::{FrameMessage, Region};
-use super::zstd::ZstdDecoder;
+use super::zstd::{ZstdDecoder, SCREEN_DICTIONARY};
 use super::{Limits, ScreenError, ScreenInit};
 use crate::wire::Result;
 use std::collections::{HashMap, HashSet};
@@ -161,20 +161,6 @@ pub struct Renderer {
     skipped_atlases: u64,
 }
 
-/// Live sessions need the verified dictionary. Unit tests use dictionary-free
-/// raw frames, so they run whether or not a local 8bit.dat exists.
-#[cfg(not(test))]
-fn renderer_dictionary() -> R<Option<&'static [u8]>> {
-    super::screen_dictionary()
-        .map(Some)
-        .map_err(ScreenError::Dictionary)
-}
-
-#[cfg(test)]
-fn renderer_dictionary() -> R<Option<&'static [u8]>> {
-    Ok(super::screen_dictionary().ok())
-}
-
 impl Renderer {
     /// A renderer at the reset frame-number baseline, with the screen dictionary.
     pub fn new(init: &ScreenInit) -> Result<Self> {
@@ -217,7 +203,7 @@ impl Renderer {
             cache_order: Vec::new(),
             cache_bytes: 0,
             skipped_atlases: 0,
-            decoder: ZstdDecoder::new(limits.max_decompressed_bytes, renderer_dictionary()?)?,
+            decoder: ZstdDecoder::new(limits.max_decompressed_bytes, Some(SCREEN_DICTIONARY))?,
             limits,
         })
     }

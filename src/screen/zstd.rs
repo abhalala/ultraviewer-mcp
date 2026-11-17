@@ -3,6 +3,10 @@
 
 use zstd_safe::{get_error_name, DCtx, DParameter, InBuffer, OutBuffer, ResetDirective};
 
+/// The trained dictionary the Windows desktop loads (UltraViewerScreenDictionary).
+/// UltraViewer-supplied data; see THIRD_PARTY_NOTICES.md.
+pub static SCREEN_DICTIONARY: &[u8] = include_bytes!("../../assets/8bit.dat");
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum ZstdError {
     AllocationFailed,
@@ -180,6 +184,19 @@ mod tests {
     }
 
     #[test]
+    fn bundled_dictionary_matches_pinned_digest() {
+        use sha2::{Digest, Sha256};
+        let digest: String = Sha256::digest(SCREEN_DICTIONARY)
+            .iter()
+            .map(|b| format!("{b:02x}"))
+            .collect();
+        assert_eq!(
+            digest,
+            "9aa45789d9ff9d329a623a685d57b67e33c777019de9ce1f273f21860e4bfe6b"
+        );
+    }
+
+    #[test]
     fn trained_dictionary_survives_mission_reset() {
         let compressed = base64::engine::general_purpose::STANDARD
             .decode("KLUv/QdYEL2gPS0BAOhNYWNWaWV3ZXIgZGljdGlvbmFyeSBmaXh0dXJlCgEA0Qz4ygnbOEGJ")
@@ -190,12 +207,8 @@ mod tests {
             missing.append(&compressed),
             Err(ZstdError::InvalidData("Dictionary mismatch".into()))
         );
-        // 8bit.dat is not in the repository; this half needs a local copy.
-        let Ok(dictionary) = crate::screen::screen_dictionary() else {
-            eprintln!("skipping trained-dictionary decode: no local 8bit.dat");
-            return;
-        };
-        let mut d = ZstdDecoder::new(MAX, Some(dictionary)).unwrap();
+        assert_eq!(SCREEN_DICTIONARY.len(), 112_640);
+        let mut d = ZstdDecoder::new(MAX, Some(SCREEN_DICTIONARY)).unwrap();
         for _ in 0..2 {
             let mut out = Vec::new();
             for byte in &compressed {
